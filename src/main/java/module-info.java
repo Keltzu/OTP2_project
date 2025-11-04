@@ -1,6 +1,7 @@
 module com.example.otp2 {
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.desktop;
 
 
     opens com.example.otp2 to javafx.fxml;
