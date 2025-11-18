@@ -15,6 +15,7 @@ public class ShoppingCartController {
     @FXML private Label lblSelectLanguage;
     @FXML private ComboBox<String> comboLanguage;
     @FXML private Button btnConfirmLanguage;
+    @FXML private Button btnSaveToDb;
 
     @FXML private Label lblPrompt;
     @FXML private TextField txtItemCount;
@@ -26,6 +27,9 @@ public class ShoppingCartController {
     private final List<Double> prices = new ArrayList<>();
     private ResourceBundle rb;
 
+    private double lastTotal = 0.0;
+    private String currentLanguageCode = "en";
+
     @FXML
     public void initialize() {
         if (comboLanguage != null) {
@@ -35,6 +39,10 @@ public class ShoppingCartController {
         setLanguage("en", "US");
         lblTotal.setText("Total: 0.00 €");
         btnCalculate.setDisable(true);
+
+        if (btnSaveToDb != null) {
+            btnSaveToDb.setDisable(true);
+        }
     }
 
     @FXML
@@ -50,6 +58,8 @@ public class ShoppingCartController {
     }
 
     private void setLanguage(String lang, String country) {
+        currentLanguageCode = lang;
+
         Locale locale = new Locale(lang, country);
         rb = ResourceBundle.getBundle("MessagesBundle", locale);
 
@@ -64,6 +74,10 @@ public class ShoppingCartController {
         txtItemCount.setPromptText(rb.getString("itemsCountPlaceholder"));
         btnEnterItems.setText(rb.getString("enterItems"));
         btnCalculate.setText(rb.getString("calculateTotal"));
+
+        if (btnSaveToDb != null) {
+            btnSaveToDb.setText(rb.getString("saveToDb"));
+        }
     }
 
     @FXML
@@ -71,6 +85,10 @@ public class ShoppingCartController {
         prices.clear();
         listItems.getItems().clear();
         lblTotal.setText("Total: 0.00 €");
+        lastTotal = 0.0;
+        if (btnSaveToDb != null) {
+            btnSaveToDb.setDisable(true);
+        }
 
         int count;
         try {
@@ -88,7 +106,9 @@ public class ShoppingCartController {
                 break;
             }
             prices.add(price);
-            listItems.getItems().add(String.format("%s %d: %.2f €", rb.getString("itemWord"), i, price));
+            listItems.getItems().add(
+                    String.format("%s %d: %.2f €", rb.getString("itemWord"), i, price)
+            );
         }
 
         btnCalculate.setDisable(prices.isEmpty());
@@ -101,7 +121,12 @@ public class ShoppingCartController {
             return;
         }
         double total = calculateTotal(prices);
+        lastTotal = total;
         lblTotal.setText(String.format("Total: %.2f €", total));
+
+        if (btnSaveToDb != null) {
+            btnSaveToDb.setDisable(false);
+        }
     }
 
     private Double askForPrice(int index) {
@@ -131,7 +156,9 @@ public class ShoppingCartController {
 
     private double calculateTotal(List<Double> prices) {
         double sum = 0;
-        for (double p : prices) sum += p;
+        for (double p : prices) {
+            sum += p;
+        }
         return sum;
     }
 
@@ -141,5 +168,24 @@ public class ShoppingCartController {
         a.setHeaderText(null);
         a.setContentText(msg);
         a.showAndWait();
+    }
+
+    @FXML
+    public void onSaveToDb(ActionEvent e) {
+        if (prices.isEmpty() || lastTotal <= 0) {
+            showInfo(rb.getString("errNoItems"));
+            return;
+        }
+
+        // tallennetaan tulos tietokantaan
+        ShoppingCartResultService.saveCartResult(
+                new ArrayList<>(prices),
+                lastTotal,
+                currentLanguageCode,
+                null                       // customerId ei vielä käytössä
+        );
+
+        showInfo(rb.getString("savedToDb"));
+        btnSaveToDb.setDisable(true);
     }
 }

@@ -22,5 +22,10 @@
     <ListView fx:id="listItems" prefHeight="200" prefWidth="300"/>
 
     <Button fx:id="btnCalculate" text="Calculate Total" onAction="#onCalculate"/>
+    <Button fx:id="btnSaveToDb"
+            text="Save to DB"
+            onAction="#onSaveToDb"
+    />
     <Label fx:id="lblTotal" style="-fx-font-weight: bold;"/>
+
 </VBox>
