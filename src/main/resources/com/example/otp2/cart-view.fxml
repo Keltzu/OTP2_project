@@ -5,6 +5,7 @@
 
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.otp2.ShoppingCartController"
+      fx:id="rootPane"
       alignment="CENTER" spacing="14">
     <padding>
         <Insets top="18" right="18" bottom="18" left="18"/>

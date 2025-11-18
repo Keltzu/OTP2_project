@@ -4,6 +4,9 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import javafx.geometry.NodeOrientation;
+import javafx.scene.layout.VBox;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +14,8 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class ShoppingCartController {
+
+    @FXML private VBox rootPane;
 
     @FXML private Label lblSelectLanguage;
     @FXML private ComboBox<String> comboLanguage;
@@ -78,7 +83,26 @@ public class ShoppingCartController {
         if (btnSaveToDb != null) {
             btnSaveToDb.setText(rb.getString("saveToDb"));
         }
+
+        if (rootPane != null) {
+            if ("ur".equals(lang)) {
+                rootPane.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                txtItemCount.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                listItems.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                lblSelectLanguage.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                lblPrompt.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                lblTotal.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+            } else {
+                rootPane.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+                txtItemCount.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+                listItems.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+                lblSelectLanguage.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+                lblPrompt.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+                lblTotal.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+            }
+        }
     }
+
 
     @FXML
     public void onEnterItems(ActionEvent e) {
