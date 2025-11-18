@@ -2,16 +2,12 @@ package com.example.otp2;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.stage.Stage;
 import javafx.geometry.NodeOrientation;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class ShoppingCartController {
 
@@ -31,9 +27,22 @@ public class ShoppingCartController {
 
     private final List<Double> prices = new ArrayList<>();
     private ResourceBundle rb;
-
+    private Map<String, String> dbStrings = Collections.emptyMap();
     private double lastTotal = 0.0;
     private String currentLanguageCode = "en";
+
+    private String tr(String key) {
+        if (dbStrings != null) {
+            String fromDb = dbStrings.get(key);
+            if (fromDb != null) {
+                return fromDb;
+            }
+        }
+        if (rb != null && rb.containsKey(key)) {
+            return rb.getString(key);
+        }
+        return key;
+    }
 
     @FXML
     public void initialize() {
@@ -67,21 +76,22 @@ public class ShoppingCartController {
 
         Locale locale = new Locale(lang, country);
         rb = ResourceBundle.getBundle("MessagesBundle", locale);
+        dbStrings = LocalizationService.getLocalizedStrings(locale);
 
         if (lblPrompt != null && lblPrompt.getScene() != null) {
             Stage stage = (Stage) lblPrompt.getScene().getWindow();
-            if (stage != null) stage.setTitle(rb.getString("title"));
+            if (stage != null) stage.setTitle(tr("title"));
         }
 
-        lblSelectLanguage.setText(rb.getString("selectLanguage"));
-        btnConfirmLanguage.setText(rb.getString("confirmLanguage"));
-        lblPrompt.setText(rb.getString("enterItemsCount"));
-        txtItemCount.setPromptText(rb.getString("itemsCountPlaceholder"));
-        btnEnterItems.setText(rb.getString("enterItems"));
-        btnCalculate.setText(rb.getString("calculateTotal"));
+        lblSelectLanguage.setText(tr("selectLanguage"));
+        btnConfirmLanguage.setText(tr("confirmLanguage"));
+        lblPrompt.setText(tr("enterItemsCount"));
+        txtItemCount.setPromptText(tr("itemsCountPlaceholder"));
+        btnEnterItems.setText(tr("enterItems"));
+        btnCalculate.setText(tr("calculateTotal"));
 
         if (btnSaveToDb != null) {
-            btnSaveToDb.setText(rb.getString("saveToDb"));
+            btnSaveToDb.setText(tr("saveToDb"));
         }
 
         if (rootPane != null) {
@@ -103,7 +113,6 @@ public class ShoppingCartController {
         }
     }
 
-
     @FXML
     public void onEnterItems(ActionEvent e) {
         prices.clear();
@@ -119,19 +128,19 @@ public class ShoppingCartController {
             count = Integer.parseInt(txtItemCount.getText().trim());
             if (count <= 0) throw new NumberFormatException();
         } catch (NumberFormatException ex) {
-            showInfo(rb.getString("errInvalidCount"));
+            showInfo(tr("errInvalidCount"));
             return;
         }
 
         for (int i = 1; i <= count; i++) {
             Double price = askForPrice(i);
             if (price == null) {
-                showInfo(String.format(rb.getString("msgCancelled"), (i - 1)));
+                showInfo(String.format(tr("msgCancelled"), (i - 1)));
                 break;
             }
             prices.add(price);
             listItems.getItems().add(
-                    String.format("%s %d: %.2f €", rb.getString("itemWord"), i, price)
+                    String.format("%s %d: %.2f €", tr("itemWord"), i, price)
             );
         }
 
@@ -141,7 +150,7 @@ public class ShoppingCartController {
     @FXML
     public void onCalculate(ActionEvent e) {
         if (prices.isEmpty()) {
-            showInfo(rb.getString("errNoItems"));
+            showInfo(tr("errNoItems"));
             return;
         }
         double total = calculateTotal(prices);
@@ -155,14 +164,14 @@ public class ShoppingCartController {
 
     private Double askForPrice(int index) {
         TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle(String.format("%s %d", rb.getString("itemWord"), index));
+        dialog.setTitle(String.format("%s %d", tr("itemWord"), index));
         dialog.setHeaderText(null);
-        dialog.setContentText(String.format(rb.getString("promptPriceFor"), index));
+        dialog.setContentText(String.format(tr("promptPriceFor"), index));
 
         Button okBtn = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
         Button cancelBtn = (Button) dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
-        okBtn.setText(rb.getString("ok"));
-        cancelBtn.setText(rb.getString("cancel"));
+        okBtn.setText(tr("ok"));
+        cancelBtn.setText(tr("cancel"));
 
         while (true) {
             var res = dialog.showAndWait();
@@ -172,7 +181,7 @@ public class ShoppingCartController {
                 if (p < 0) throw new NumberFormatException();
                 return p;
             } catch (NumberFormatException ex) {
-                showInfo(rb.getString("errInvalidPrice"));
+                showInfo(tr("errInvalidPrice"));
                 dialog.getEditor().setText("");
             }
         }
@@ -188,7 +197,7 @@ public class ShoppingCartController {
 
     private void showInfo(String msg) {
         Alert a = new Alert(Alert.AlertType.INFORMATION);
-        a.setTitle(rb != null ? rb.getString("messageTitle") : "Message");
+        a.setTitle(tr("messageTitle"));
         a.setHeaderText(null);
         a.setContentText(msg);
         a.showAndWait();
@@ -197,19 +206,18 @@ public class ShoppingCartController {
     @FXML
     public void onSaveToDb(ActionEvent e) {
         if (prices.isEmpty() || lastTotal <= 0) {
-            showInfo(rb.getString("errNoItems"));
+            showInfo(tr("errNoItems"));
             return;
         }
 
-        // tallennetaan tulos tietokantaan
         ShoppingCartResultService.saveCartResult(
                 new ArrayList<>(prices),
                 lastTotal,
                 currentLanguageCode,
-                null                       // customerId ei vielä käytössä
+                null
         );
 
-        showInfo(rb.getString("savedToDb"));
+        showInfo(tr("savedToDb"));
         btnSaveToDb.setDisable(true);
     }
 }
