@@ -1,0 +1,76 @@
+/* overall window */
+.root {
+    -fx-font-family: "Segoe UI", Roboto, Arial;
+    -fx-background-color: linear-gradient(to bottom, #fafafa, #f2f2f2);
+}
+
+/* spacing of the VBox */
+.vbox {
+    -fx-spacing: 14;
+}
+
+/* labels */
+.label {
+    -fx-text-fill: #222;
+}
+
+#lblSelectLanguage {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 6 0;
+}
+
+#lblPrompt {
+    -fx-font-size: 13px;
+    -fx-padding: 8 0 2 0;
+}
+
+#lblTotal {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8 0 0 0;
+}
+
+/* text field and combo box */
+.text-field, .combo-box {
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-background-color: white;
+    -fx-border-color: #d0d0d0;
+    -fx-padding: 6 10 6 10;
+}
+
+.text-field:focused, .combo-box:focused {
+    -fx-border-color: #2f72ff;
+    -fx-effect: dropshadow(gaussian, rgba(47,114,255,0.35), 8, 0.3, 0, 0);
+}
+
+/* buttons */
+.button {
+    -fx-background-radius: 10;
+    -fx-background-color: #2f72ff;
+    -fx-text-fill: white;
+    -fx-font-weight: 600;
+    -fx-padding: 6 12 6 12;
+}
+
+.button:hover {
+    -fx-background-color: #245de0;
+}
+
+.button:pressed {
+    -fx-background-color: #1c4bb5;
+}
+
+.button:disabled {
+    -fx-background-color: #999999;
+    -fx-opacity: 0.6;
+}
+
+/* list view */
+.list-view {
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}

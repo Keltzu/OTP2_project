@@ -167,11 +167,14 @@ public class ShoppingCartController {
         dialog.setTitle(String.format("%s %d", tr("itemWord"), index));
         dialog.setHeaderText(null);
         dialog.setContentText(String.format(tr("promptPriceFor"), index));
-
         Button okBtn = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
         Button cancelBtn = (Button) dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
         okBtn.setText(tr("ok"));
         cancelBtn.setText(tr("cancel"));
+        DialogPane dp = dialog.getDialogPane();
+        dp.getStylesheets().add(
+                getClass().getResource("dialog.css").toExternalForm()
+        );
 
         while (true) {
             var res = dialog.showAndWait();
@@ -200,8 +203,14 @@ public class ShoppingCartController {
         a.setTitle(tr("messageTitle"));
         a.setHeaderText(null);
         a.setContentText(msg);
+        // dialog stylesheet
+        DialogPane dp = a.getDialogPane();
+        dp.getStylesheets().add(
+                getClass().getResource("dialog.css").toExternalForm()
+        );
         a.showAndWait();
     }
+
 
     @FXML
     public void onSaveToDb(ActionEvent e) {
