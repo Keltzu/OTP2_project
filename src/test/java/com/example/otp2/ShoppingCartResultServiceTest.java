@@ -4,10 +4,19 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class ShoppingCartResultServiceTest {
+    @Test
+    void testSaveCartNullCustomer() {
+        assertDoesNotThrow(() ->
+                ShoppingCartResultService.saveCartResult(
+                        List.of(1.0, 2.0), 3.0, "en", null
+                )
+        );
+    }
 
     @Test
     void saveCartResultDoesNotThrowWithNullCustomerId() {

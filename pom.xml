@@ -19,6 +19,7 @@
         <javafx.version>17.0.1</javafx.version>
         <javafx.platform>win</javafx.platform>
 
+        <!-- JUnit 5 -->
         <junit.version>5.10.2</junit.version>
     </properties>
 
@@ -94,7 +95,7 @@
                 <configuration>
                     <excludes>
                         <!-- moduulilista ja JavaFX-UI, joita ei käytännössä testata -->
-                        <exclude>module-info.class</exclude>
+                        <exclude>**/module-info.class</exclude>
                         <exclude>**/ShoppingCartApplication.class</exclude>
                         <exclude>**/ShoppingCartController.class</exclude>
                     </excludes>
@@ -115,7 +116,7 @@
                 </executions>
             </plugin>
 
-            <!-- Surefire – ajaa JUnit 5 testit -->
+            <!-- Surefire – ajaa JUnit 5 -testit -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>

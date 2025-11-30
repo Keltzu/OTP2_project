@@ -8,6 +8,15 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LocalizationServiceTest {
+    @Test
+    void testLocalizationWithDifferentLocales() {
+        var en = LocalizationService.getLocalizedStrings(new Locale("en"));
+        var fr = LocalizationService.getLocalizedStrings(new Locale("fr"));
+
+        assertNotNull(en);
+        assertNotNull(fr);
+        assertNotEquals(en, fr);
+    }
 
     @Test
     void getLocalizedStringsReturnsNonNullMapForEnglish() {
@@ -32,3 +41,4 @@ class LocalizationServiceTest {
         assertNotNull(LocalizationService.getLocalizedStrings(vi));
     }
 }
+
