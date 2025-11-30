@@ -25,7 +25,6 @@ pipeline {
                 bat 'mvn -B clean package -DskipTests'
             }
         }
-
         stage('Test') {
             steps {
                 bat 'mvn -B test'
@@ -39,6 +38,18 @@ pipeline {
                     sourcePattern: 'src/main/java',
                     inclusionPattern: '**/*.class'
                 )
+            }
+        }
+        stage('SonarQube analysis') {
+            steps {
+                withSonarQubeEnv('LocalSonar') {
+                    bat '''
+                        mvn -B sonar:sonar ^
+                          -Dsonar.projectKey=otp2 ^
+                          -Dsonar.projectName="otp2-shopping-cart" ^
+                          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+                    '''
+                }
             }
         }
         stage('Docker build') {
