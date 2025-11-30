@@ -9,14 +9,16 @@
     <version>1.0-SNAPSHOT</version>
     <name>otp2</name>
 
+
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <maven.compiler.release>24</maven.compiler.release>
+        <maven.compiler.release>17</maven.compiler.release>
+
         <javafx.version>17.0.1</javafx.version>
 
-
-        <javafx.platform>mac</javafx.platform>
+        <javafx.platform>win</javafx.platform>
 
         <junit.version>5.10.2</junit.version>
     </properties>
