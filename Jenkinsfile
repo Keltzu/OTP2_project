@@ -31,7 +31,16 @@ pipeline {
                 bat 'mvn -B test'
             }
         }
-
+        stage('Coverage') {
+            steps {
+                jacoco(
+                    execPattern: '**/target/jacoco.exec',
+                    classPattern: 'target/classes',
+                    sourcePattern: 'src/main/java',
+                    inclusionPattern: '**/*.class'
+                )
+            }
+        }
         stage('Docker build') {
             steps {
                 // Jenkins korvaa ${DOCKER_IMAGE} ennen kuin komento menee Windowsille
