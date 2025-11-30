@@ -2,13 +2,13 @@ pipeline {
     agent any
 
     tools {
-        jdk 'JDK17'
-        maven 'Maven3'
+        jdk 'jdk17'        // sama nimi kuin Manage Jenkins → Global Tool Configuration → JDK
+        maven 'maven-3'    // sama nimi kuin Maven-työkalulla
     }
 
     environment {
-        APP_NAME    = 'otp2-shopping-cart'
-        IMAGE_TAG   = "${env.BUILD_NUMBER}"
+        APP_NAME     = 'otp2-shopping-cart'
+        IMAGE_TAG    = "${env.BUILD_NUMBER}"
         DOCKER_IMAGE = "${APP_NAME}:${IMAGE_TAG}"
     }
 
@@ -21,31 +21,30 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'mvn -B clean package -DskipTests'
+                // Windows-komento
+                bat 'mvn -B clean package -DskipTests'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'mvn -B test'
+                bat 'mvn -B test'
             }
         }
 
         stage('Docker build') {
             steps {
-                sh "docker build -t ${DOCKER_IMAGE} ."
+                // Jenkins korvaa ${DOCKER_IMAGE} ennen kuin komento menee Windowsille
+                bat "docker build -t ${DOCKER_IMAGE} ."
             }
         }
 
-        // Lyhyt ajokoe Docker-imagella
         stage('Docker smoke test') {
             when {
-                expression { false } // vaihda true, jos haluat ottaa tämän käyttöön
+                expression { false } // vaihda true, jos haluat ottaa käyttöön
             }
             steps {
-                sh """
-                   docker run --rm ${DOCKER_IMAGE} --help
-                """
+                bat "docker run --rm ${DOCKER_IMAGE} --help"
             }
         }
     }
@@ -53,7 +52,10 @@ pipeline {
     post {
         always {
             archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
-            junit 'target/surefire-reports/*.xml'
+
+            // sallitaan tyhjä tulos ettei build kaadu jos testejä ei vielä ole
+            junit testResults: 'target/surefire-reports/*.xml',
+                  allowEmptyResults: true
         }
         success {
             echo "Build ja Docker-image (${DOCKER_IMAGE}) valmistuivat onnistuneesti."
