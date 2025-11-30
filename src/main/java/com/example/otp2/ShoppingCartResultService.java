@@ -1,18 +1,37 @@
 package com.example.otp2;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 import java.sql.*;
 import java.util.List;
 
 public class ShoppingCartResultService {
 
-    private static final String DB_HOST = System.getenv().getOrDefault("DB_HOST", "localhost");
-    private static final String DB_PORT = System.getenv().getOrDefault("DB_PORT", "3306");
-    private static final String DB_NAME = System.getenv().getOrDefault("DB_NAME", "shopping_cart_db");
-    private static final String DB_USER = System.getenv().getOrDefault("DB_USER", "root");
-    private static final String DB_PASSWORD = System.getenv().getOrDefault("DB_PASSWORD", "9642");
+    private static final Dotenv DOTENV = Dotenv.configure()
+            .ignoreIfMissing()
+            .load();
+
+    private static String getEnv(String key, String defaultValue) {
+        String fromEnv = System.getenv(key);
+        if (fromEnv != null && !fromEnv.isEmpty()) {
+            return fromEnv;
+        }
+        String fromFile = DOTENV.get(key);
+        if (fromFile != null && !fromFile.isEmpty()) {
+            return fromFile;
+        }
+        return defaultValue;
+    }
+
+    private static final String DB_HOST = getEnv("DB_HOST", "localhost");
+    private static final String DB_PORT = getEnv("DB_PORT", "3306");
+    private static final String DB_NAME = getEnv("DB_NAME", "shopping_cart_db");
+    private static final String DB_USER = getEnv("DB_USER", "root");
+    private static final String DB_PASSWORD = getEnv("DB_PASSWORD", "");
 
     private static final String DB_URL =
             "jdbc:mariadb://" + DB_HOST + ":" + DB_PORT + "/" + DB_NAME;
+
 
     public static void saveCartResult(List<Double> prices,
                                       double totalPrice,
@@ -71,7 +90,6 @@ public class ShoppingCartResultService {
 
         } catch (SQLException e) {
             System.err.println("❌ Failed to connect/save shopping cart at " + DB_URL);
-            e.printStackTrace();
         }
     }
 }
