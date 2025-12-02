@@ -6,6 +6,6 @@ module com.example.otp2 {
     requires io.github.cdimascio.dotenv.java;
 
 
-    opens com.example.otp2 to javafx.fxml;
-    exports com.example.otp2;
+    opens otp2.shoppingcartapp.classes to javafx.fxml;
+    exports otp2.shoppingcartapp.classes;
 }

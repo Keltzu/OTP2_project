@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.example</groupId>
+    <groupId>shoppingcartapp.classes</groupId>
     <artifactId>otp2</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>otp2</name>
@@ -78,7 +78,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.example.otp2.ShoppingCartApplication</mainClass>
+                            <mainClass>otp2.shoppingcartapp.classes.ShoppingCartApplication</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -99,7 +99,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>com.example.otp2/com.example.otp2.ShoppingCartApplication</mainClass>
+                    <mainClass>com.example.otp2/otp2.shoppingcartapp.classes.ShoppingCartApplication</mainClass>
                 </configuration>
             </plugin>
 

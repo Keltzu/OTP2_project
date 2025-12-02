@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 
 <VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.otp2.ShoppingCartController"
+      fx:controller="otp2.shoppingcartapp.classes.ShoppingCartController"
       fx:id="rootPane"
       alignment="CENTER" spacing="14">
     <padding>

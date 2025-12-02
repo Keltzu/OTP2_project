@@ -1,4 +1,4 @@
-package com.example.otp2;
+package otp2.shoppingcartapp.classes;
 
 import org.junit.jupiter.api.Test;
 
