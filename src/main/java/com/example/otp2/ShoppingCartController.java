@@ -11,6 +11,11 @@ import java.util.*;
 
 public class ShoppingCartController {
 
+    private static final String ITEM_WORD_KEY = "itemWord";
+    private static final String DIALOG_CSS = "dialog.css";
+    private static final String TOTAL_KEY = "total";
+
+
     @FXML private VBox rootPane;
 
     @FXML private Label lblSelectLanguage;
@@ -89,6 +94,7 @@ public class ShoppingCartController {
         txtItemCount.setPromptText(tr("itemsCountPlaceholder"));
         btnEnterItems.setText(tr("enterItems"));
         btnCalculate.setText(tr("calculateTotal"));
+            lblTotal.setText(tr(TOTAL_KEY)+ " 0.00 €");
 
         if (btnSaveToDb != null) {
             btnSaveToDb.setText(tr("saveToDb"));
@@ -117,7 +123,7 @@ public class ShoppingCartController {
     public void onEnterItems(ActionEvent e) {
         prices.clear();
         listItems.getItems().clear();
-        lblTotal.setText("Total: 0.00 €");
+        lblTotal.setText(tr(TOTAL_KEY)+ " 0.00 €");
         lastTotal = 0.0;
         if (btnSaveToDb != null) {
             btnSaveToDb.setDisable(true);
@@ -132,17 +138,23 @@ public class ShoppingCartController {
             return;
         }
 
+
         for (int i = 1; i <= count; i++) {
-            Double price = askForPrice(i);
-            if (price == null) {
+            ItemEntry entry = askForPrice(i);
+            if (entry == null) {
                 showInfo(String.format(tr("msgCancelled"), (i - 1)));
                 break;
             }
-            prices.add(price);
-            listItems.getItems().add(
-                    String.format("%s %d: %.2f €", tr("itemWord"), i, price)
-            );
+            double price = entry.getPrice();
+            int qty = entry.getQuantity();
+            for (int q = 0; q < qty; q++) {
+                prices.add(price);
+                listItems.getItems().add(
+                        String.format("%s %d: %.2f €", tr(ITEM_WORD_KEY), i, price)
+                );
+            }
         }
+
 
         btnCalculate.setDisable(prices.isEmpty());
     }
@@ -155,40 +167,79 @@ public class ShoppingCartController {
         }
         double total = calculateTotal(prices);
         lastTotal = total;
-        lblTotal.setText(String.format("Total: %.2f €", total));
+        lblTotal.setText(tr(TOTAL_KEY)+ String.format(" %.2f €", total));
 
         if (btnSaveToDb != null) {
             btnSaveToDb.setDisable(false);
         }
     }
 
-    private Double askForPrice(int index) {
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle(String.format("%s %d", tr("itemWord"), index));
-        dialog.setHeaderText(null);
-        dialog.setContentText(String.format(tr("promptPriceFor"), index));
-        Button okBtn = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-        Button cancelBtn = (Button) dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
-        okBtn.setText(tr("ok"));
-        cancelBtn.setText(tr("cancel"));
-        DialogPane dp = dialog.getDialogPane();
-        dp.getStylesheets().add(
-                getClass().getResource("dialog.css").toExternalForm()
+    @FXML
+    private ItemEntry askForPrice(int index) {
+        Double price = askForSinglePrice(index);
+        if (price == null) return null;
+
+        Integer qty = askForQuantity(index);
+        if (qty == null) return null;
+
+        return new ItemEntry(price, qty);
+    }
+    @FXML
+    private Double askForSinglePrice(int index) {
+        TextInputDialog d = createTextDialog(
+                String.format(tr("promptPriceFor"), index), tr("ok"), tr("cancel")
         );
 
         while (true) {
-            var res = dialog.showAndWait();
+            var res = d.showAndWait();
             if (res.isEmpty()) return null;
+
             try {
-                double p = Double.parseDouble(res.get().trim().replace(',', '.'));
-                if (p < 0) throw new NumberFormatException();
-                return p;
+                double price = Double.parseDouble(res.get().trim().replace(',', '.'));
+                if (price < 0) throw new NumberFormatException();
+                return price;
             } catch (NumberFormatException ex) {
                 showInfo(tr("errInvalidPrice"));
-                dialog.getEditor().setText("");
+                d.getEditor().setText("");
             }
         }
     }
+
+    @FXML
+    private Integer askForQuantity(int index) {
+        TextInputDialog d = createTextDialog(
+                tr("itemsCountPlaceholder"), tr("ok"), tr("cancel")
+        );
+        d.getEditor().setText("1");
+
+        while (true) {
+            var res = d.showAndWait();
+            if (res.isEmpty()) return null;
+
+            try {
+                int qty = Integer.parseInt(res.get().trim());
+                if (qty <= 0) throw new NumberFormatException();
+                return qty;
+            } catch (NumberFormatException ex) {
+                showInfo(tr("errInvalidCount"));
+                d.getEditor().setText("");
+            }
+        }
+    }
+
+    @FXML
+    private TextInputDialog createTextDialog(String content, String ok, String cancel) {
+        TextInputDialog d = new TextInputDialog();
+        d.setHeaderText(null);
+        d.setContentText(content);
+        d.getDialogPane().lookupButton(ButtonType.OK);
+        d.getDialogPane().lookupButton(ButtonType.CANCEL);
+        d.getDialogPane().getStylesheets().add(
+                getClass().getResource(DIALOG_CSS).toExternalForm()
+        );
+        return d;
+    }
+
 
     private double calculateTotal(List<Double> prices) {
         double sum = 0;
@@ -206,7 +257,7 @@ public class ShoppingCartController {
         // dialog stylesheet
         DialogPane dp = a.getDialogPane();
         dp.getStylesheets().add(
-                getClass().getResource("dialog.css").toExternalForm()
+                getClass().getResource(DIALOG_CSS).toExternalForm()
         );
         a.showAndWait();
     }
