@@ -29,7 +29,7 @@ public class LocalizationService {
     private static final String DB_USER     = getEnv("DB_USER", "root");
     private static final String DB_PASSWORD = getEnv("DB_PASSWORD", "");
     private static final String DB_HOST     = getEnv("DB_HOST", "localhost");
-    private static final String DB_PORT     = getEnv("DB_PORT", "3306");
+    private static final String DB_PORT     = getEnv("DB_PORT", "12345");
 
     private static String getDatabaseUrl() {
         return "jdbc:mariadb://" + DB_HOST + ":" + DB_PORT + "/" + DB_NAME

@@ -16,7 +16,7 @@
         <maven.compiler.release>17</maven.compiler.release>
 
         <!-- JavaFX 17 Windowsille -->
-        <javafx.version>17.0.1</javafx.version>
+        <javafx.version>17.0.17</javafx.version>
         <javafx.platform>win</javafx.platform>
 
         <!-- JUnit 5 -->

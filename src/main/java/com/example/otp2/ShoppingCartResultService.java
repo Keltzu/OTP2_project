@@ -27,7 +27,7 @@ public class ShoppingCartResultService {
     private static final String DB_PORT = getEnv("DB_PORT", "3306");
     private static final String DB_NAME = getEnv("DB_NAME", "shopping_cart_db");
     private static final String DB_USER = getEnv("DB_USER", "root");
-    private static final String DB_PASSWORD = getEnv("DB_PASSWORD", "");
+    private static final String DB_PASSWORD = getEnv("DB_PASSWORD", "12345");
 
     private static final String DB_URL =
             "jdbc:mariadb://" + DB_HOST + ":" + DB_PORT + "/" + DB_NAME;
